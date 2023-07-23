@@ -1,0 +1,223 @@
+$customObject = @(
+	[pscustomObject]@{
+		名前 = "john Doe"
+		年齢 = 10
+		都市 = "東京"
+		国　= "日本"
+	},
+	[pscustomObject]@{
+		名前 = "johe Roe"
+		年齢 = 25
+		都市 = "大阪"
+		国　= "日本"
+}
+)
+
+
+PS C:\home\user\kazmatsu> $customObject = @(
+>> [pscustomObject]@{
+>>     名前 = "john Doe"
+>>     年齢 = 10
+>>     都市 = "東京"
+>>     国　= "日本"
+>> },
+>> [pscustomObject]@{
+>>     名前 = "johe Roe"
+>>     年齢 = 25
+>>     都市 = "大阪"
+>>     国　= "日本"
+>> }
+>> )
+PS C:\home\user\kazmatsu> $customObject
+
+名前     年齢 都市 国
+----     ---- ---- --
+john Doe   10 東京 日本
+johe Roe   25 大阪 日本
+
+
+PS C:\home\user\kazmatsu> $toCsv =$customObject | ConvertTo-Csv
+PS C:\home\user\kazmatsu> $toCsv
+#TYPE System.Management.Automation.PSCustomObject
+"名前","年齢","都市","国"
+"john Doe","10","東京","日本"
+"johe Roe","25","大阪","日本"
+PS C:\home\user\kazmatsu> $fromCSv =$toCsv | ConvertFrom-Csv
+PS C:\home\user\kazmatsu> $fromCSv
+
+名前     年齢 都市 国
+----     ---- ---- --
+john Doe 10   東京 日本
+johe Roe 25   大阪 日本
+
+
+PS C:\home\user\kazmatsu> $customObject | Export-Csv -Path test.csv
+PS C:\home\user\kazmatsu> $customObject | Export-Csv -Path test.csv -Encoding oem
+PS C:\home\user\kazmatsu> Get-Content -Path .\test.csv
+#TYPE System.Management.Automation.PSCustomObject
+"名前","年齢","都市","国"
+"john Doe","10","東京","日本"
+"johe Roe","25","大阪","日本"
+PS C:\home\user\kazmatsu>
+PS C:\home\user\kazmatsu> $toJson = $customObject | ConvertTo-Json
+PS C:\home\user\kazmatsu> $toJson
+[
+    {
+        "名前":  "john Doe",
+        "年齢":  10,
+        "都市":  "東京",
+        "国":  "日本"
+    },
+    {
+        "名前":  "johe Roe",
+        "年齢":  25,
+        "都市":  "大阪",
+        "国":  "日本"
+    }
+]
+PS C:\home\user\kazmatsu> $fromJson = $toJson | ConvertFrom-Json
+PS C:\home\user\kazmatsu> $fromJson
+
+名前     年齢 都市 国
+----     ---- ---- --
+john Doe   10 東京 日本
+johe Roe   25 大阪 日本
+
+
+PS C:\home\user\kazmatsu> $customObject | ConvertTo-Json | Out-File text.json
+PS C:\home\user\kazmatsu> Get-Content -Path .\text.json
+[
+    {
+        "名前":  "john Doe",
+        "年齢":  10,
+        "都市":  "東京",
+        "国":  "日本"
+    },
+    {
+        "名前":  "johe Roe",
+        "年齢":  25,
+        "都市":  "大阪",
+        "国":  "日本"
+    }
+]
+PS C:\home\user\kazmatsu> $customObject | ConvertTo-Json | Out-File test.json
+PS C:\home\user\kazmatsu> Get-Content -Path .\test.json
+[
+    {
+        "名前":  "john Doe",
+        "年齢":  10,
+        "都市":  "東京",
+        "国":  "日本"
+    },
+    {
+        "名前":  "johe Roe",
+        "年齢":  25,
+        "都市":  "大阪",
+        "国":  "日本"
+    }
+]
+PS C:\home\user\kazmatsu> Get-Content -Raw .\test.json | ConvertFrom-Json
+
+名前     年齢 都市 国
+----     ---- ---- --
+john Doe   10 東京 日本
+johe Roe   25 大阪 日本
+
+
+PS C:\home\user\kazmatsu> $customObject | ConvertTo-Json -Compress | Out-File compress.json
+PS C:\home\user\kazmatsu> Get-Content -Path .\compress.json
+[{"名前":"john Doe","年齢":10,"都市":"東京","国":"日本"},{"名前":"johe Roe","年齢":25,"都市":"大阪","国":"日本"}]
+PS C:\home\user\kazmatsu> Get-Content -Path .\compress.json | ConvertFrom-Json
+
+名前     年齢 都市 国
+----     ---- ---- --
+john Doe   10 東京 日本
+johe Roe   25 大阪 日本
+
+
+PS C:\home\user\kazmatsu> $toXml = $customObject |ConvertTo-Xml
+PS C:\home\user\kazmatsu> $toXml
+
+xml                            Objects
+---                            -------
+version="1.0" encoding="utf-8" Objects
+
+
+PS C:\home\user\kazmatsu> [System.IO.Directory]::SetCurrentDirectory($pwd)
+PS C:\home\user\kazmatsu> $toXml.Save("test.xml")
+PS C:\home\user\kazmatsu> Get-Content -Path .\test.xml
+<?xml version="1.0" encoding="utf-8"?>
+<Objects>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="名前" Type="System.String">john Doe</Property>
+    <Property Name="年齢" Type="System.Int32">10</Property>
+    <Property Name="都市" Type="System.String">東京</Property>
+    <Property Name="国" Type="System.String">日本</Property>
+  </Object>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="名前" Type="System.String">johe Roe</Property>
+    <Property Name="年齢" Type="System.Int32">25</Property>
+    <Property Name="都市" Type="System.String">大阪</Property>
+    <Property Name="国" Type="System.String">日本</Property>
+  </Object>
+</Objects>
+PS C:\home\user\kazmatsu>
+PS C:\home\user\kazmatsu> $xml = Get-Content -Path .\test.xml -Raw
+PS C:\home\user\kazmatsu> $xml | Out-File test2.xml -Encoding utf8
+PS C:\home\user\kazmatsu> Get-Content .\test2.xml
+<?xml version="1.0" encoding="utf-8"?>
+<Objects>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="名前" Type="System.String">john Doe</Property>
+    <Property Name="年齢" Type="System.Int32">10</Property>
+    <Property Name="都市" Type="System.String">東京</Property>
+    <Property Name="国" Type="System.String">日本</Property>
+  </Object>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="名前" Type="System.String">johe Roe</Property>
+    <Property Name="年齢" Type="System.Int32">25</Property>
+    <Property Name="都市" Type="System.String">大阪</Property>
+    <Property Name="国" Type="System.String">日本</Property>
+  </Object>
+</Objects>
+PS C:\home\user\kazmatsu> $customObject | Export-Clixml -Path test3.xml
+PS C:\home\user\kazmatsu> Get-Content -Path .\test3.xml
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>System.Management.Automation.PSCustomObject</T>
+      <T>System.Object</T>
+    </TN>
+    <MS>
+      <S N="名前">john Doe</S>
+      <I32 N="年齢">10</I32>
+      <S N="都市">東京</S>
+      <S N="国">日本</S>
+    </MS>
+  </Obj>
+  <Obj RefId="1">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="名前">johe Roe</S>
+      <I32 N="年齢">25</I32>
+      <S N="都市">大阪</S>
+      <S N="国">日本</S>
+    </MS>
+  </Obj>
+</Objs>
+PS C:\home\user\kazmatsu> $toHtml = $customObject | ConvertTo-Html
+PS C:\home\user\kazmatsu> $toHtml | Out-File test.html
+PS C:\home\user\kazmatsu> Get-Content -Path .\test.html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>HTML TABLE</title>
+</head><body>
+<table>
+<colgroup><col/><col/><col/><col/></colgroup>
+<tr><th>名前</th><th>年齢</th><th>都市</th><th>国</th></tr>
+<tr><td>john Doe</td><td>10</td><td>東京</td><td>日本</td></tr>
+<tr><td>johe Roe</td><td>25</td><td>大阪</td><td>日本</td></tr>
+</table>
+</body></html>
+PS C:\home\user\kazmatsu>
