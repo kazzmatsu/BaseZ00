@@ -1,0 +1,10 @@
+( Host as text, Port as number, dataBase as text , schema as text , table as text ) =>
+let
+    pgHost = Text.Format("#{0}:#{1}",{Host,Port}) ,
+    pgTable = Text.Format("#{0}", {table} ),
+    pgSchema = Text.Format("#{0}",{schema}),
+    src_1 = PostgreSQL.Database(pgHost , dataBase, [HierarchicalNavigation=true]),
+    src_2 = src_1{[Schema=pgSchema]}[Data],
+    result = src_2{[Name=pgTable]}[Data]
+in
+    result
