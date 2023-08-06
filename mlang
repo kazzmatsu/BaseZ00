@@ -1,0 +1,31 @@
+= Table.TransformColumTypes( , {{"No", Int64.Type}})
+--------------------------------------------------------------------------------
+let
+	list_number = table_number[No],
+	result = Table.FromRows(
+		List.TransformMany(
+			list_number,
+			(x) => if Number.IsEven(x) then {x*2} else {x},
+			(x,y) => {x,y}
+		),
+		{"No", "偶数２倍"}
+	)
+in
+	result
+--------------------------------------------------------------------------------
+( tbl as table, limit_num as number ) =>
+let
+	list_no = tbl[No],
+	list_num = List.Last(list_no),
+	next_num = list_num + 1,
+	list_new_no = list_no & {next_num},
+	list_trans = List.Transform(list_new_no, each {_} ),
+	tbl_new = #table(
+			type table [No = number],
+			list_trans
+			)
+	,
+	result = if next_num < limit_num then @連番作成(tbl_new, limit_num) else tbl_new
+in
+	result
+--------------------------------------------------------------------------------
